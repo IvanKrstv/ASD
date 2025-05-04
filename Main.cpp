@@ -20,7 +20,7 @@ const int no_column_width = 5;
 const int age_column_width = 5;
 const int results_column_width = 9;
 const int table_width_without_name = no_column_width + age_column_width + results_column_width;
-
+//co
 
 void Input(int& size, int& max_name);
 
