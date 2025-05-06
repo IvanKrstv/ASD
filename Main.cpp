@@ -20,7 +20,6 @@ const int no_column_width = 5;
 const int age_column_width = 5;
 const int results_column_width = 9;
 const int table_width_without_name = no_column_width + age_column_width + results_column_width;
-//co
 
 void Input(int& size, int& max_name);
 
@@ -30,7 +29,8 @@ void SubMenu(Participants participants[], int size, int max_name);
 void SearchYoungest(Participants participants[], int size);
 void SearchByName(Participants participants[], int size, int max_name);
 
-void SortByAge(Participants participants[], int size);
+void SortByAge(int size, int max_name);
+void BubbleSort();
 
 void AdditionalFunctions(Participants participants[], int size, int max_name);
 void SortByAgeWithoutChanging(Participants participants[], int size, int max_name);
@@ -46,7 +46,7 @@ bool CheckParticipantsEntered(bool entered);
 void CheckMaxName(Participants* participant, int& max_name);
 void AutoInput(Participants* participant, int& size, int& max_name, bool& entered);
 
-Participants* insertAtEnd(Participants* head_ref, Participants* new_participant);
+Participants* insertAtEnd(Participants* new_participant);
 
 
 int main()
@@ -64,51 +64,59 @@ int main()
 		cout << "Beauty contest" << endl;
 		cout << endl;
 		cout << "1. Add new participants;" << endl;
-		cout << "2. Display all participants;" << endl;
-		cout << "3. Search participants;" << endl;
-		cout << "4. Sort the participants in ascending order by their age;" << endl;
-		cout << "5. Additional actions;" << endl;
-		cout << "6. Exit." << endl;
+		cout << "2. Remove participants;" << endl;
+		cout << "3. Display all participants;" << endl;
+		cout << "4. Search participants;" << endl;
+		cout << "5. Sort the participants in ascending order by their age;" << endl;
+		cout << "6. Additional actions;" << endl;
+		cout << "7. Exit." << endl;
 		cout << "\nEnter your choice: "; cin >> choice;
 		if (!CheckCin())
 			continue;
 		cout << endl;
 
-		if (choice >= 1 && choice <= 6)
+		if (choice >= 1 && choice <= 7)
 		{
 			switch (choice)
+
 			{
 			case 1: Input(size, max_name);
 				entered_participants = true;
 				break;
 
-			case 2: if (CheckParticipantsEntered(entered_participants))
+			case 2: Remove(size);
+				break;
+
+			case 3: if (CheckParticipantsEntered(entered_participants))
 			{
 				Output(size, max_name);
 				system("pause");
 			}
 				  break;
 
-			case 3: if (CheckParticipantsEntered(entered_participants))
+			case 4: if (CheckParticipantsEntered(entered_participants))
 			{
 				system("cls");
 				SubMenu(participants, size, max_name);
 			}
 				  break;
 
-			case 4: if (CheckParticipantsEntered(entered_participants))
-				SortByAge(participants, size);
+			case 5: if (CheckParticipantsEntered(entered_participants))
+			{
+				SortByAge(size, max_name);
+				BubbleSort();
+			}
 				break;
 
 
-			case 5: if (CheckParticipantsEntered(entered_participants))
+			case 6: if (CheckParticipantsEntered(entered_participants))
 			{
 				system("cls");
 				AdditionalFunctions(participants, size, max_name);
 			}
 				  break;
 
-			case 6: exit = true;
+			case 7: exit = true;
 				break;
 			}
 		}
@@ -123,7 +131,7 @@ int main()
 	return 0;
 }
 
-
+// Done
 void Input(int& size, int& max_name)
 {
 	int new_participants;
@@ -158,7 +166,7 @@ void Input(int& size, int& max_name)
 				return;
 
 			ClearBuffer();
-			insertAtEnd(start, new_participant);
+			insertAtEnd(new_participant);
 
 			cout << endl;
 			size++;
@@ -166,7 +174,42 @@ void Input(int& size, int& max_name)
 	}
 }
 
+// Done
+void Remove(int& size)
+{
+	char wanted_name[80];
+	cout << "Enter the name of the participant to be removed: "; ClearBuffer();
+	cin.getline(wanted_name, 80);
 
+	Participants* temp = start;
+	Participants* prev;
+
+	if (temp != NULL && temp->name == wanted_name) 
+	{
+		start = temp->next;
+		free(temp);
+		return;
+	}
+
+	while (temp != NULL && temp->name != wanted_name) 
+	{
+		prev = temp;
+		temp = temp->next;
+	}
+
+	if (temp == NULL)
+	{
+		cout << "The element is not present in the list!" << endl;
+		return;
+	}
+
+	prev->next = temp->next;
+	size--;
+
+	free(temp);
+}
+
+// Done
 void Output(int size, int max_name)
 {
 	HeaderRowOfTable(max_name);
@@ -271,26 +314,123 @@ void SearchByName(Participants participants[], int size, int max_name)
 }
 
 
-void SortByAge(Participants participants[], int size)
+// Done
+void SortByAge(int size, int max_name)
 {
-	Participants temp;
-	bool swap = false;
-	for (int i = 0; i < size - 1; i++)
+	Participants array[10];
+	Participants* temp = start;
+
+	for (int i = 0; i < 10; i++)
 	{
-		swap = false;
-		for (int j = 0; j < size - i - 1; j++)
+		if (temp == NULL)
 		{
-			if (participants[j].age > participants[j + 1].age)
+			cout << "Not enough participants to be sorted!" << endl;
+			return;
+		}
+
+		array[i] = *temp;
+		temp = temp->next;
+	}
+
+	Participants bf;
+	for (int i = 0; i < 9; i++)
+	{
+		for (int j = i + 1; j < 10; j++)
+		{
+			if (array[i].age > array[j].age)
 			{
-				temp = participants[j];
-				participants[j] = participants[j + 1];
-				participants[j + 1] = temp;
-				swap = true;
+				bf = array[i];
+				array[i] = array[j];
+				array[j] = bf;
 			}
 		}
-		if (!swap)
-			break;
 	}
+
+	cout << "First 10 participants sorted by age:" << endl;
+	HeaderRowOfTable(max_name);
+	TitleRowOfTable(max_name);
+	HeaderRowOfTable(max_name);
+	for (int i = 0; i < size; i++)
+	{
+		cout << fixed << setprecision(2);
+		cout << "| " <<
+			setw(no_column_width - 2) << right << array[i].number << " | " <<
+			setw(max_name + 1) << left << array[i].name << "| " <<
+			setw(age_column_width - 2) << right << array[i].age << " | " <<
+			setw(results_column_width - 2) << right << array[i].results << " |" << endl;
+		if (i != size - 1)
+		{
+			for (int j = 0; j < table_width_without_name + max_name + 2; j++)
+				cout << "-";
+			cout << endl;
+		}
+		else HeaderRowOfTable(max_name);
+	}
+}
+void BubbleSort()
+{
+	/*Participants* current = start;
+	Participants* index = NULL;
+	Participants* temp;
+
+	if (start == NULL)
+		return;
+
+	while (current != NULL) 
+	{
+		index = current->next;
+
+		while (index != NULL) 
+		{
+			if (current->age > index->age) 
+			{
+				temp = current;
+				current = index;
+				index = temp;
+			}
+			index = index->next;
+		}
+		current = current->next;
+	}*/
+
+	if (start == NULL || start->next == NULL)
+		return;
+
+	bool swapped;
+	Participants* current;
+	Participants* prev;
+	Participants* temp;
+
+	do 
+	{
+		swapped = false;
+		prev = NULL;
+		current = start;
+
+		while (current != NULL && current->next != NULL) 
+		{
+			if (current->age > current->next->age) 
+			{
+				temp = current->next;
+				current->next = temp->next;
+				temp->next = current;
+
+				if (prev == NULL)
+					start = temp;
+				else 
+					prev->next = temp;
+
+				// After swap, temp is before ptr now
+				prev = temp;
+				swapped = true;
+			}
+			else 
+			{
+				prev = current;
+				current = current->next;
+			}
+		}
+	} while (swapped);
 }
 
 
@@ -338,7 +478,7 @@ void SortByAgeWithoutChanging(Participants participants[], int size, int max_nam
 	for (int i = 0; i < size; i++)
 		temp_participants[i] = participants[i];
 
-	SortByAge(temp_participants, size);
+	SortByAge(size, max_name);
 	Output(size, max_name);
 }
 void SearchByAge(Participants participants[], int size, int max_name)
@@ -390,7 +530,7 @@ void SearchByGender(Participants participants[], int size, int max_name)
 }
 
 
-
+// Done
 void HeaderRowOfTable(int max_name)
 {
 	cout << "+"; for (int i = 0; i < no_column_width; i++) cout << "-";
@@ -418,6 +558,7 @@ void BodyOfTable(Participants* participant, int size, int max_name, int i)
 	else HeaderRowOfTable(max_name);
 }
 
+// Done
 void CheckMaxName(Participants* participant, int& max_name)
 {
 	if (strlen(participant->name) > max_name)
@@ -464,22 +605,22 @@ void AutoInput(Participants* participant, int& size, int& max_name, bool& entere
 	in_file.close();
 }
 
-Participants* insertAtEnd(Participants* head_ref, Participants* new_participant)
+Participants* insertAtEnd(Participants* new_participant)
 {
 	Participants* new_node = new Participants;
-	Participants* last = head_ref;
+	Participants* last = start;
 
 	new_node = new_participant;
 	new_node->next = NULL;
 
-	if (head_ref == NULL) {
-		head_ref = new_node;
-		return head_ref;
+	if (start == NULL) {
+		start = new_node;
+		return start;
 	}
 
 	while (last->next != NULL)
 		last = last->next;
 
 	last->next = new_node;
-	return head_ref;
+	return start;
 }
