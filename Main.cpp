@@ -27,9 +27,11 @@ void Remove(int& size);
 
 void Output(int max_name);
 
+
 void SubMenu(Participants participants[], int size, int max_name);
 void SearchYoungest(Participants participants[], int size);
 void SearchByName(Participants participants[], int size, int max_name);
+
 
 void SortByAge(int max_name);
 void BubbleSort();
@@ -49,8 +51,10 @@ void TitleRowOfTable(int max_name);
 void BodyOfTable(Participants* participant, int max_name);
 void BodyOfTableArray(Participants array[], int size, int max_name, int i);
 
+
 void CheckMaxName(Participants* participant, int& max_name);
 void AutoInput(int& size, int& max_name, bool& entered);
+
 
 Participants* insertAtEnd(Participants* new_participant);
 void swap(Participants* a, Participants* b);
@@ -63,8 +67,8 @@ int main()
 	bool entered_participants = false;
 
 	int size = 0;
-
 	int max_name = 0;
+
 	AutoInput(size, max_name, entered_participants);
 	do
 	{
@@ -430,6 +434,7 @@ void BubbleSort()
 }
 
 
+// Done
 void AdditionalFunctions(int max_name)
 {
 	int choice; bool back = false;
@@ -644,6 +649,7 @@ void AutoInput(int& size, int& max_name, bool& entered)
 	in_file.close();
 }
 
+// Done
 void swap(Participants* a, Participants* b)
 {
 	Participants temp = *a;
