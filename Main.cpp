@@ -556,7 +556,7 @@ void SearchByResult(int max_name)
 	}
 
 	if (!found)
-		cout << "No participant is this gender." << endl;
+		cout << "No participant has result over " << target_result << "." << endl;
 }
 
 
