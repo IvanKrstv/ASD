@@ -23,30 +23,37 @@ const int table_width_without_name = no_column_width + age_column_width + result
 
 void Input(int& size, int& max_name);
 
-void Output(int size, int max_name);
+void Remove(int& size);
+
+void Output(int max_name);
 
 void SubMenu(Participants participants[], int size, int max_name);
 void SearchYoungest(Participants participants[], int size);
 void SearchByName(Participants participants[], int size, int max_name);
 
-void SortByAge(int size, int max_name);
+void SortByAge(int max_name);
 void BubbleSort();
 
-void AdditionalFunctions(Participants participants[], int size, int max_name);
-void swap(Participants* a, Participants* b);
+
+void AdditionalFunctions(int max_name);
+
 void SelectionSort(Participants array[], int size);
-void SearchByAge(Participants participants[], int size, int max_name);
+void SearchByAge(int max_name);
+
+void InsertionSort(Participants array[], int size);
+void SearchByResult(int max_name);
 
 
 void HeaderRowOfTable(int max_name);
 void TitleRowOfTable(int max_name);
-void BodyOfTable(Participants* participant, int size, int max_name, int i);
+void BodyOfTable(Participants* participant, int max_name);
 void BodyOfTableArray(Participants array[], int size, int max_name, int i);
 
 void CheckMaxName(Participants* participant, int& max_name);
-void AutoInput(Participants* participant, int& size, int& max_name, bool& entered);
+void AutoInput(int& size, int& max_name, bool& entered);
 
 Participants* insertAtEnd(Participants* new_participant);
+void swap(Participants* a, Participants* b);
 
 
 int main()
@@ -58,7 +65,7 @@ int main()
 	int size = 0;
 
 	int max_name = 0;
-	AutoInput(start, size, max_name, entered_participants);
+	AutoInput(size, max_name, entered_participants);
 	do
 	{
 		cout << "Beauty contest" << endl;
@@ -89,7 +96,7 @@ int main()
 
 			case 3: if (CheckParticipantsEntered(entered_participants))
 			{
-				Output(size, max_name);
+				Output(max_name);
 				system("pause");
 			}
 				  break;
@@ -103,8 +110,9 @@ int main()
 
 			case 5: if (CheckParticipantsEntered(entered_participants))
 			{
-				SortByAge(size, max_name);
+				SortByAge(max_name);
 				BubbleSort();
+				system("pause");
 			}
 				break;
 
@@ -112,7 +120,7 @@ int main()
 			case 6: if (CheckParticipantsEntered(entered_participants))
 			{
 				system("cls");
-				AdditionalFunctions(participants, size, max_name);
+				AdditionalFunctions(max_name);
 			}
 				  break;
 
@@ -210,16 +218,16 @@ void Remove(int& size)
 }
 
 // Done
-void Output(int size, int max_name)
+void Output(int max_name)
 {
 	HeaderRowOfTable(max_name);
 	TitleRowOfTable(max_name);
 	HeaderRowOfTable(max_name);
 
 	Participants* temp = start;
-	for (int i = 0; i < size; i++)
+	while (temp != NULL)
 	{
-		BodyOfTable(temp, size, max_name, i);
+		BodyOfTable(temp, max_name);
 		temp = temp->next;
 	}
 }
@@ -305,7 +313,7 @@ void SearchByName(Participants participants[], int size, int max_name)
 		if (strcmp(target_name, participants[i].name) == 0)
 		{
 			found = true;
-			BodyOfTable(participants, size, max_name, i);
+			BodyOfTableArray(participants, size, max_name, i);
 		}
 	}
 
@@ -315,7 +323,7 @@ void SearchByName(Participants participants[], int size, int max_name)
 
 
 // Done
-void SortByAge(int size, int max_name)
+void SortByAge(int max_name)
 {
 	Participants array[10];
 	Participants* temp = start;
@@ -351,22 +359,9 @@ void SortByAge(int size, int max_name)
 	HeaderRowOfTable(max_name);
 	TitleRowOfTable(max_name);
 	HeaderRowOfTable(max_name);
-	for (int i = 0; i < size; i++)
-	{
-		cout << fixed << setprecision(2);
-		cout << "| " <<
-			setw(no_column_width - 2) << right << array[i].number << " | " <<
-			setw(max_name + 1) << left << array[i].name << "| " <<
-			setw(age_column_width - 2) << right << array[i].age << " | " <<
-			setw(results_column_width - 2) << right << array[i].results << " |" << endl;
-		if (i != size - 1)
-		{
-			for (int j = 0; j < table_width_without_name + max_name + 2; j++)
-				cout << "-";
-			cout << endl;
-		}
-		else HeaderRowOfTable(max_name);
-	}
+
+	for (int i = 0; i < 10; i++)
+		BodyOfTableArray(array, 10, max_name, i);
 }
 void BubbleSort()
 {
@@ -435,8 +430,7 @@ void BubbleSort()
 }
 
 
-
-void AdditionalFunctions(Participants participants[], int size, int max_name)
+void AdditionalFunctions(int max_name)
 {
 	int choice; bool back = false;
 	do
@@ -453,9 +447,9 @@ void AdditionalFunctions(Participants participants[], int size, int max_name)
 		{
 			switch (choice)
 			{
-			case 1: SearchByAge(participants, size, max_name);
+			case 1: SearchByAge(max_name);
 				break;
-			case 2: 
+			case 2: SearchByResult(max_name);
 				break;
 			case 3: back = true;
 				break;
@@ -468,12 +462,6 @@ void AdditionalFunctions(Participants participants[], int size, int max_name)
 	} while (!back);
 }
 
-void swap(Participants* a, Participants* b)
-{
-	Participants temp = *a;
-	*a = *b;
-	*b = temp;
-}
 void SelectionSort(Participants array[], int size) 
 {
 	for (int step = 0; step < size - 1; step++) 
@@ -487,7 +475,7 @@ void SelectionSort(Participants array[], int size)
 		swap(&array[min_idx], &array[step]);
 	}
 }
-void SearchByAge(Participants participants[], int size, int max_name)
+void SearchByAge(int max_name)
 {
 	int target_age; bool found = false; 
 	Participants correct_age[max_participants_size]; int age_arr_size = 0;
@@ -522,23 +510,49 @@ void SearchByAge(Participants participants[], int size, int max_name)
 
 }
 
-void SearchByResult(Participants participants[], int size, int max_name)
+void InsertionSort(Participants array[], int size) 
 {
-	char target_gender[7]; bool found = false;
-	cout << "Gender: "; cin.clear(); cin.ignore(numeric_limits<streamsize>::max(), '\n'); cin.getline(target_gender, 7);
+	for (int i = 1; i < size; i++) 
+	{
+		int j = i ;
+
+		while (j > 0 && array[j - 1].results < array[j].results)
+		{
+			swap(array[j - 1], array[j]);
+			j--;
+		}
+	}
+}
+void SearchByResult(int max_name)
+{
+	float target_result; bool found = false;
+	Participants correct_result[max_participants_size]; int result_arr_size = 0;
+
+	cout << "Results over: "; cin >> target_result;
+	if (!CheckCin())
+		return;
 	cout << endl;
+
+	Participants* temp = start;
+	while (temp != NULL)
+	{
+		if (temp->results >= target_result)
+		{
+			if (result_arr_size == 0)
+				found = true;
+			correct_result[result_arr_size] = *temp;
+			result_arr_size++;
+		}
+	}
+	InsertionSort(correct_result, result_arr_size);
 
 	HeaderRowOfTable(max_name);
 	TitleRowOfTable(max_name);
 	HeaderRowOfTable(max_name);
 
-	for (int i = 0; i < size; i++)
+	for (int i = 0; i < result_arr_size; i++)
 	{
-		if (strcmp(target_gender, participants[i].gender) == 0)
-		{
-			found = true;
-			BodyOfTable(participants, size, max_name, i);
-		}
+		BodyOfTableArray(correct_result, result_arr_size, max_name, i);
 	}
 
 	if (!found)
@@ -557,7 +571,7 @@ void TitleRowOfTable(int max_name)
 {
 	cout << "| No. |" << setw(max_name + 2) << left << " Name" << "| Age | Results |" << endl;
 }
-void BodyOfTable(Participants* participant, int size, int max_name, int i)
+void BodyOfTable(Participants* participant, int max_name)
 {
 	cout << fixed << setprecision(2);
 	cout << "| " <<
@@ -565,7 +579,7 @@ void BodyOfTable(Participants* participant, int size, int max_name, int i)
 		setw(max_name + 1) << left << participant->name << "| " <<
 		setw(age_column_width - 2) << right << participant->age << " | " <<
 		setw(results_column_width - 2) << right << participant->results << " |" << endl;
-	if (i != size - 1)
+	if (participant->next != NULL)
 	{
 		for (int j = 0; j < table_width_without_name + max_name + 2; j++)
 			cout << "-";
@@ -596,7 +610,7 @@ void CheckMaxName(Participants* participant, int& max_name)
 	if (strlen(participant->name) > max_name)
 		max_name = strlen(participant->name);
 }
-void AutoInput(Participants* participant, int& size, int& max_name, bool& entered)
+void AutoInput(int& size, int& max_name, bool& entered)
 {
 	char temp[10];
 
@@ -608,6 +622,8 @@ void AutoInput(Participants* participant, int& size, int& max_name, bool& entere
 	}
 	while (!in_file.eof() && size < max_participants_size)
 	{
+		Participants* participant;
+
 		in_file >> temp;
 		participant->number = atoi(temp);
 
@@ -621,12 +637,19 @@ void AutoInput(Participants* participant, int& size, int& max_name, bool& entere
 		in_file >> temp;
 		participant->results = atof(temp);
 
+		insertAtEnd(participant);
 		size++;
 		entered = true;
 	}
 	in_file.close();
 }
 
+void swap(Participants* a, Participants* b)
+{
+	Participants temp = *a;
+	*a = *b;
+	*b = temp;
+}
 Participants* insertAtEnd(Participants* new_participant)
 {
 	Participants* new_node = new Participants;

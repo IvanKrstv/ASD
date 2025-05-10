@@ -7,7 +7,7 @@ bool CheckParticipantsEntered(bool entered)
 	if (!entered)
 	{
 		cout << "There are no entered participants!" << endl;
-		PressEnterToContinue();
+		system("pause");
 		return false;
 	}
 	return true;
@@ -19,7 +19,7 @@ bool CheckCin()
 	else
 	{
 		cout << "\nInvalid input!" << endl;
-		PressEnterToContinue();
+		system("pause");
 		system("cls");
 		return false;
 	}
