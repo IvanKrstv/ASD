@@ -2,6 +2,16 @@
 #include <iostream>
 using namespace std;
 
+bool CheckParticipantsEntered(bool entered)
+{
+	if (!entered)
+	{
+		cout << "There are no entered participants!" << endl;
+		PressEnterToContinue();
+		return false;
+	}
+	return true;
+}
 bool CheckCin()
 {
 	if (cin)

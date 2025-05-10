@@ -33,16 +33,16 @@ void SortByAge(int size, int max_name);
 void BubbleSort();
 
 void AdditionalFunctions(Participants participants[], int size, int max_name);
-void SortByAgeWithoutChanging(Participants participants[], int size, int max_name);
+void swap(Participants* a, Participants* b);
+void SelectionSort(Participants array[], int size);
 void SearchByAge(Participants participants[], int size, int max_name);
-void SearchByGender(Participants participants[], int size, int max_name);
 
 
 void HeaderRowOfTable(int max_name);
 void TitleRowOfTable(int max_name);
 void BodyOfTable(Participants* participant, int size, int max_name, int i);
+void BodyOfTableArray(Participants array[], int size, int max_name, int i);
 
-bool CheckParticipantsEntered(bool entered);
 void CheckMaxName(Participants* participant, int& max_name);
 void AutoInput(Participants* participant, int& size, int& max_name, bool& entered);
 
@@ -332,6 +332,7 @@ void SortByAge(int size, int max_name)
 		temp = temp->next;
 	}
 
+	// Exchange sort
 	Participants bf;
 	for (int i = 0; i < 9; i++)
 	{
@@ -440,73 +441,88 @@ void AdditionalFunctions(Participants participants[], int size, int max_name)
 	int choice; bool back = false;
 	do
 	{
-		cout << "1. Display all participants sorted by age;" << endl;
-		cout << "2. Search by age;" << endl;
-		cout << "3. Search by gender;" << endl;
-		cout << "4. Back" << endl;
+		cout << "1. Search by age;" << endl;
+		cout << "2. Search by result;" << endl;
+		cout << "3. Back" << endl;
 		cout << "\nEnter your choice: "; cin >> choice;
 		if (!CheckCin())
 			continue;
 		cout << endl;
 
-		if (choice >= 1 && choice <= 4)
+		if (choice >= 1 && choice <= 3)
 		{
 			switch (choice)
 			{
-			case 1: SortByAgeWithoutChanging(participants, size, max_name);
-				PressEnterToContinue();
+			case 1: SearchByAge(participants, size, max_name);
 				break;
-			case 2: SearchByAge(participants, size, max_name);
+			case 2: 
 				break;
-			case 3: SearchByGender(participants, size, max_name);
-				PressEnterToContinueAfterIgnore();
-				break;
-			case 4: back = true;
+			case 3: back = true;
 				break;
 			}
 		}
-		else {
+		else 
 			cout << "No such choice!" << endl;
-			PressEnterToContinue();
-		}
+		system("pause");
 		system("cls");
 	} while (!back);
 }
-void SortByAgeWithoutChanging(Participants participants[], int size, int max_name)
-{
-	Participants temp_participants[max_participants_size];
-	for (int i = 0; i < size; i++)
-		temp_participants[i] = participants[i];
 
-	SortByAge(size, max_name);
-	Output(size, max_name);
+void swap(Participants* a, Participants* b)
+{
+	Participants temp = *a;
+	*a = *b;
+	*b = temp;
+}
+void SelectionSort(Participants array[], int size) 
+{
+	for (int step = 0; step < size - 1; step++) 
+	{
+		int min_idx = step;
+		for (int i = step + 1; i < size; i++) 
+		{
+			if (array[i].age < array[min_idx].age)
+				min_idx = i;
+		}
+		swap(&array[min_idx], &array[step]);
+	}
 }
 void SearchByAge(Participants participants[], int size, int max_name)
 {
-	int target_age; bool found = false;
+	int target_age; bool found = false; 
+	Participants correct_age[max_participants_size]; int age_arr_size = 0;
+
 	cout << "Age: "; cin >> target_age;
 	if (!CheckCin())
 		return;
 	cout << endl;
 
+	Participants* temp = start;
+	while (temp != NULL)
+	{
+		if (temp->age == target_age)
+		{
+			if (age_arr_size == 0)
+				found = true;
+			correct_age[age_arr_size] = *temp;
+			age_arr_size++;
+		}
+	}
+	SelectionSort(correct_age, age_arr_size);
+
 	HeaderRowOfTable(max_name);
 	TitleRowOfTable(max_name);
 	HeaderRowOfTable(max_name);
 
-	for (int i = 0; i < size; i++)
-	{
-		if (participants[i].age == target_age)
-		{
-			found = true;
-			BodyOfTable(participants, size, max_name, i);
-		}
-	}
+	for (int i = 0; i < age_arr_size; i++)
+		BodyOfTableArray(correct_age, age_arr_size, max_name, i);
 
 	if (!found)
 		cout << "No participant is this age." << endl;
-	PressEnterToContinue();
+
 }
-void SearchByGender(Participants participants[], int size, int max_name)
+
+void SearchByResult(Participants participants[], int size, int max_name)
 {
 	char target_gender[7]; bool found = false;
 	cout << "Gender: "; cin.clear(); cin.ignore(numeric_limits<streamsize>::max(), '\n'); cin.getline(target_gender, 7);
@@ -557,22 +573,28 @@ void BodyOfTable(Participants* participant, int size, int max_name, int i)
 	}
 	else HeaderRowOfTable(max_name);
 }
+void BodyOfTableArray(Participants array[], int size, int max_name, int i)
+{
+	cout << fixed << setprecision(2);
+	cout << "| " <<
+		setw(no_column_width - 2) << right << array[i].number << " | " <<
+		setw(max_name + 1) << left << array[i].name << "| " <<
+		setw(age_column_width - 2) << right << array[i].age << " | " <<
+		setw(results_column_width - 2) << right << array[i].results << " |" << endl;
+	if (i != size - 1)
+	{
+		for (int j = 0; j < table_width_without_name + max_name + 2; j++)
+			cout << "-";
+		cout << endl;
+	}
+	else HeaderRowOfTable(max_name);
+}
 
 // Done
 void CheckMaxName(Participants* participant, int& max_name)
 {
 	if (strlen(participant->name) > max_name)
 		max_name = strlen(participant->name);
-}
-bool CheckParticipantsEntered(bool entered)
-{
-	if (!entered)
-	{
-		cout << "There are no entered participants!" << endl;
-		PressEnterToContinue();
-		return false;
-	}
-	return true;
 }
 void AutoInput(Participants* participant, int& size, int& max_name, bool& entered)
 {
