@@ -9,7 +9,7 @@ using namespace std;
 struct Participants {
 	int number, age;
 	char name[80];
-	float results;
+	int results;
 	Participants* next;
 }*start = NULL;
 
@@ -28,9 +28,8 @@ void Remove(int& size);
 void Output(int max_name);
 
 
-void SubMenu(Participants participants[], int size, int max_name);
-void SearchYoungest(Participants participants[], int size);
-void SearchByName(Participants participants[], int size, int max_name);
+int binarySearch(Participants arr[], int x, int size);
+void SearchByResult(int max_name);
 
 
 void SortByAge(int max_name);
@@ -43,7 +42,7 @@ void SelectionSort(Participants array[], int size);
 void SearchByAge(int max_name);
 
 void InsertionSort(Participants array[], int size);
-void SearchByResult(int max_name);
+void SortByResult(int max_name);
 
 
 void HeaderRowOfTable(int max_name);
@@ -107,8 +106,8 @@ int main()
 
 			case 4: if (CheckParticipantsEntered(entered_participants))
 			{
-				system("cls");
-				SubMenu(participants, size, max_name);
+				SearchByResult;
+				system("pause");
 			}
 				  break;
 
@@ -196,14 +195,14 @@ void Remove(int& size)
 	Participants* temp = start;
 	Participants* prev;
 
-	if (temp != NULL && temp->name == wanted_name) 
+	if (temp != NULL && temp->name == wanted_name)
 	{
 		start = temp->next;
 		free(temp);
 		return;
 	}
 
-	while (temp != NULL && temp->name != wanted_name) 
+	while (temp != NULL && temp->name != wanted_name)
 	{
 		prev = temp;
 		temp = temp->next;
@@ -236,95 +235,70 @@ void Output(int max_name)
 	}
 }
 
-
-void SubMenu(Participants participants[], int size, int max_name)
+// Done
+int binarySearch(Participants arr[], int x, int size) 
 {
-	int choice;
-	bool back = false;
-	do
+	int low = 0;
+	int high = size - 1;
+
+	while (low <= high) 
 	{
-		cout << "1. Search youngest participants;" << endl;
-		cout << "2. Search by name;" << endl;
-		cout << "3. Back" << endl;
-		cout << "\nEnter your choice: "; cin >> choice;
+		int mid = (low + high) / 2; 
 
-		if (!CheckCin())
-			continue;
-		cout << endl;
+		if (x == arr[mid].results)
+			return mid;
+		else if (x > arr[mid].results)
+			low = mid + 1;
+		else
+			high = mid - 1;
+	}
 
-		if (choice >= 1 && choice <= 3)
+	return -1;
+}
+void SearchByResult(int max_name)
+{
+	Participants* temp = start;
+	Participants participants_array[max_participants_size]; int size = 0;
+
+	while (temp != NULL)
+	{
+		participants_array[size] = *temp;
+		temp = temp->next;
+		size++;
+	}
+
+	Participants bf;
+	for (int i = 0; i < size - 1; i++)
+	{
+		for (int j = i + 1; j < size; j++)
 		{
-			switch (choice)
+			if (participants_array[i].results > participants_array[j].results)
 			{
-			case 1: SearchYoungest(participants, size);
-				PressEnterToContinue();
-				break;
-			case 2: SearchByName(participants, size, max_name);
-				PressEnterToContinueAfterIgnore();
-				break;
-			case 3: back = true;
-				break;
+				bf = participants_array[i];
+				participants_array[i] = participants_array[j];
+				participants_array[j] = bf;
 			}
 		}
-		else
-		{
-			cout << "No such choice!" << endl;
-			PressEnterToContinue();
-		}
-		system("cls");
-	} while (!back);
-}
-void SearchYoungest(Participants participants[], int size)
-{
-	int min_age = participants[0].age, counter = 0;
-
-	for (int i = 1; i < size; i++)
-	{
-		if (participants[i].age < min_age)
-			min_age = participants[i].age;
 	}
 
-	for (int j = 0; j < size; j++)
-	{
-		if (participants[j].age == min_age)
-		{
-			if (counter >= 1)
-				cout << ", ";
-			cout << participants[j].name;
-			counter++;
-		}
-	}
+	int target_result;
 
+	cout << "Result: "; cin >> target_result;
+	if (!CheckCin())
+		return;
 	cout << endl;
-	if (counter > 1)
-		cout << "These participants are " << min_age << " years old." << endl;
-	else cout << "The participant is " << min_age << " years old." << endl;
-}
-void SearchByName(Participants participants[], int size, int max_name)
-{
-	char target_name[80]; bool found = false;
 
-	cout << "Name: ";
-	ClearBuffer();
-	cin.getline(target_name, 79);
+	int result = binarySearch(participants_array, target_result, size);
 
-	HeaderRowOfTable(max_name);
-	TitleRowOfTable(max_name);
-	HeaderRowOfTable(max_name);
-
-	for (int i = 0; i < size; i++)
+	if (result != -1)
 	{
-		if (strcmp(target_name, participants[i].name) == 0)
-		{
-			found = true;
-			BodyOfTableArray(participants, size, max_name, i);
-		}
+		HeaderRowOfTable(max_name);
+		TitleRowOfTable(max_name);
+		HeaderRowOfTable(max_name);
+		BodyOfTableArray(participants_array, size, max_name, result);
 	}
-
-	if (!found)
-		cout << "No participant with such name." << endl;
+	else cout << "No participant with this result was found!";
 }
-
 
 // Done
 void SortByAge(int max_name)
@@ -369,30 +343,6 @@ void SortByAge(int max_name)
 }
 void BubbleSort()
 {
-	/*Participants* current = start;
-	Participants* index = NULL;
-	Participants* temp;
-
-	if (start == NULL)
-		return;
-
-	while (current != NULL) 
-	{
-		index = current->next;
-
-		while (index != NULL) 
-		{
-			if (current->age > index->age) 
-			{
-				temp = current;
-				current = index;
-				index = temp;
-			}
-			index = index->next;
-		}
-		current = current->next;
-	}*/
-
 	if (start == NULL || start->next == NULL)
 		return;
 
@@ -454,7 +404,7 @@ void AdditionalFunctions(int max_name)
 			{
 			case 1: SearchByAge(max_name);
 				break;
-			case 2: SearchByResult(max_name);
+			case 2: SortByResult(max_name);
 				break;
 			case 3: back = true;
 				break;
@@ -499,6 +449,7 @@ void SearchByAge(int max_name)
 				found = true;
 			correct_age[age_arr_size] = *temp;
 			age_arr_size++;
+			temp = temp->next;
 		}
 	}
 	SelectionSort(correct_age, age_arr_size);
@@ -528,9 +479,9 @@ void InsertionSort(Participants array[], int size)
 		}
 	}
 }
-void SearchByResult(int max_name)
+void SortByResult(int max_name)
 {
-	float target_result; bool found = false;
+	int target_result; bool found = false;
 	Participants correct_result[max_participants_size]; int result_arr_size = 0;
 
 	cout << "Results over: "; cin >> target_result;
@@ -547,6 +498,7 @@ void SearchByResult(int max_name)
 				found = true;
 			correct_result[result_arr_size] = *temp;
 			result_arr_size++;
+			temp = temp->next;
 		}
 	}
 	InsertionSort(correct_result, result_arr_size);
@@ -640,7 +592,7 @@ void AutoInput(int& size, int& max_name, bool& entered)
 		participant->age = atoi(temp);
 
 		in_file >> temp;
-		participant->results = atof(temp);
+		participant->results = atoi(temp);
 
 		insertAtEnd(participant);
 		size++;

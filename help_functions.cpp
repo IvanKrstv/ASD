@@ -24,17 +24,6 @@ bool CheckCin()
 		return false;
 	}
 }
-void PressEnterToContinue()
-{
-	cout << "\nPress Enter to continue";
-	ClearBuffer();
-	cin.get();
-}
-void PressEnterToContinueAfterIgnore()
-{
-	cout << "\nPress Enter to continue";
-	cin.get();
-}
 void ClearBuffer()
 {
 	cin.clear();
