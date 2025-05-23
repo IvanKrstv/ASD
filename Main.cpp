@@ -106,7 +106,7 @@ int main()
 
 			case 4: if (CheckParticipantsEntered(entered_participants))
 			{
-				SearchByResult;
+				SearchByResult(max_name);
 				system("pause");
 			}
 				  break;
@@ -195,14 +195,14 @@ void Remove(int& size)
 	Participants* temp = start;
 	Participants* prev;
 
-	if (temp != NULL && temp->name == wanted_name)
+	if (temp != NULL && strcmp(temp->name, wanted_name) == 0)
 	{
 		start = temp->next;
 		free(temp);
 		return;
 	}
 
-	while (temp != NULL && temp->name != wanted_name)
+	while (temp != NULL && strcmp(temp->name, wanted_name) != 0)
 	{
 		prev = temp;
 		temp = temp->next;
