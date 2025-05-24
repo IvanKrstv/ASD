@@ -52,7 +52,7 @@ void BodyOfTableArray(Participants array[], int size, int max_name, int i);
 
 
 void CheckMaxName(Participants* participant, int& max_name);
-void AutoInput(int& size, int& max_name, bool& entered);
+void AutoInput(int& size, int& max_name);
 
 
 Participants* insertAtEnd(Participants* new_participant);
@@ -63,12 +63,11 @@ int main()
 {
 	int choice;
 	bool exit = false;
-	bool entered_participants = false;
 
 	int size = 0;
 	int max_name = 0;
 
-	AutoInput(size, max_name, entered_participants);
+	AutoInput(size, max_name);
 	do
 	{
 		cout << "Beauty contest" << endl;
@@ -91,27 +90,26 @@ int main()
 
 			{
 			case 1: Input(size, max_name);
-				entered_participants = true;
 				break;
 
 			case 2: Remove(size);
 				break;
 
-			case 3: if (CheckParticipantsEntered(entered_participants))
+			case 3: if (CheckParticipantsEntered(size))
 			{
 				Output(max_name);
 				system("pause");
 			}
 				  break;
 
-			case 4: if (CheckParticipantsEntered(entered_participants))
+			case 4: if (CheckParticipantsEntered(size))
 			{
 				SearchByResult(max_name);
 				system("pause");
 			}
 				  break;
 
-			case 5: if (CheckParticipantsEntered(entered_participants))
+			case 5: if (CheckParticipantsEntered(size))
 			{
 				SortByAge(max_name);
 				BubbleSort();
@@ -120,7 +118,7 @@ int main()
 				break;
 
 
-			case 6: if (CheckParticipantsEntered(entered_participants))
+			case 6: if (CheckParticipantsEntered(size))
 			{
 				system("cls");
 				AdditionalFunctions(max_name);
@@ -193,12 +191,13 @@ void Remove(int& size)
 	cin.getline(wanted_name, 80);
 
 	Participants* temp = start;
-	Participants* prev;
+	Participants* prev = NULL;
 
 	if (temp != NULL && strcmp(temp->name, wanted_name) == 0)
 	{
 		start = temp->next;
-		free(temp);
+		size--;
+		delete temp;
 		return;
 	}
 
@@ -217,7 +216,7 @@ void Remove(int& size)
 	prev->next = temp->next;
 	size--;
 
-	free(temp);
+	delete temp;
 }
 
 // Done
@@ -567,7 +566,7 @@ void CheckMaxName(Participants* participant, int& max_name)
 	if (strlen(participant->name) > max_name)
 		max_name = strlen(participant->name);
 }
-void AutoInput(int& size, int& max_name, bool& entered)
+void AutoInput(int& size, int& max_name)
 {
 	char temp[10];
 
@@ -579,7 +578,7 @@ void AutoInput(int& size, int& max_name, bool& entered)
 	}
 	while (!in_file.eof() && size < max_participants_size)
 	{
-		Participants* participant;
+		Participants* participant = NULL;
 
 		in_file >> temp;
 		participant->number = atoi(temp);
@@ -596,7 +595,6 @@ void AutoInput(int& size, int& max_name, bool& entered)
 
 		insertAtEnd(participant);
 		size++;
-		entered = true;
 	}
 	in_file.close();
 }

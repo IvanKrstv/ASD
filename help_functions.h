@@ -1,5 +1,5 @@
 #pragma once
 
-bool CheckParticipantsEntered(bool entered);
+bool CheckParticipantsEntered(int size);
 bool CheckCin();
 void ClearBuffer();

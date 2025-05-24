@@ -2,9 +2,9 @@
 #include <iostream>
 using namespace std;
 
-bool CheckParticipantsEntered(bool entered)
+bool CheckParticipantsEntered(int size)
 {
-	if (!entered)
+	if (size < 1)
 	{
 		cout << "There are no entered participants!" << endl;
 		system("pause");
