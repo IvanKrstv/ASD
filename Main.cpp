@@ -317,7 +317,6 @@ void SortByAge(int max_name)
 		temp = temp->next;
 	}
 
-	// Exchange sort
 	Participants bf;
 	for (int i = 0; i < 9; i++)
 	{
@@ -369,7 +368,6 @@ void BubbleSort()
 				else 
 					prev->next = temp;
 
-				// After swap, temp is before ptr now
 				prev = temp;
 				swapped = true;
 			}
@@ -548,13 +546,6 @@ void BodyOfTableArray(Participants array[], int size, int max_name, int i)
 		setw(age_column_width - 2) << right << array[i].age << " | " <<
 		setw(results_column_width - 2) << right << array[i].results << " |" << endl;
 	HeaderRowOfTable(max_name);
-	/*if (i != size - 1)
-	{
-		for (int j = 0; j < table_width_without_name + max_name + 2; j++)
-			cout << "-";
-		cout << endl;
-	}
-	else HeaderRowOfTable(max_name);*/
 }
 
 
