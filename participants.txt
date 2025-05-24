@@ -1,0 +1,40 @@
+32
+Elena Ivanova
+23
+92
+3
+Maria Dimitrova
+20
+88
+45
+Boris Nikolov
+14
+103
+17
+Yana Stoyanova
+18
+95
+67
+Hristo Todorov
+25
+98
+1
+Niya Ivanova
+18
+108
+7
+Viktoria Marinova
+19
+91
+24
+Dimitar Vasilev
+15
+104
+4
+Gergana Ivanova
+56
+56
+22
+Mariya Ivanova
+19
+55

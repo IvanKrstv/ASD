@@ -19,6 +19,7 @@ bool CheckCin()
 	else
 	{
 		cout << "\nInvalid input!" << endl;
+		ClearBuffer();
 		system("pause");
 		system("cls");
 		return false;
