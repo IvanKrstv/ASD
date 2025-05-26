@@ -473,7 +473,7 @@ void InsertionSort(Participants array[], int size)
 
 		while (j > 0 && array[j - 1].results < array[j].results)
 		{
-			swap(array[j - 1], array[j]);
+			swap(&array[j - 1], &array[j]);
 			j--;
 		}
 	}
